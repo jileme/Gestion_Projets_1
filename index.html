@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestionnaire de Projets</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗂️</text></svg>">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     /* Custom scrollbar for better aesthetics */
@@ -26,85 +27,20 @@
     input[type="month"]::-webkit-calendar-picker-indicator {
         filter: invert(0.5); /* Adjust if needed for better visibility on dark/light themes */
     }
-
-    @media print {
-      @page {
-        size: A4 landscape;
-        margin: 1cm; /* Adjust margin as needed */
-      }
-      body {
-        -webkit-print-color-adjust: exact !important; /* Ensures background colors and images are printed in Chrome/Safari */
-        print-color-adjust: exact !important; /* Standard property */
-        margin: 0 !important;
-        padding: 0 !important;
-        font-size: 10pt; /* Base font size for print */
-        background-color: #ffffff !important; /* Ensure white background */
-      }
-      .no-print {
-        display: none !important;
-      }
-      
-      #app-container > *:not(#project-table-printable-area) {
-        display: none !important;
-      }
-      
-      #project-table-printable-area {
-        display: block !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        box-shadow: none !important;
-        border: none !important;
-      }
-
-      #project-table-printable-area table {
-        width: 100% !important;
-        border-collapse: collapse !important;
-        font-size: 8pt;
-        table-layout: auto;
-      }
-      #project-table-printable-area th,
-      #project-table-printable-area td {
-        border: 1px solid #999999 !important;
-        padding: 3px 5px !important;
-        word-break: break-word;
-        text-align: left !important;
-      }
-      #project-table-printable-area th {
-        background-color: #e0e0e0 !important;
-        font-weight: bold;
-      }
-      #project-table-printable-area .action-buttons-cell button {
-        display: none !important;
-      }
-      .container {
-        max-width: none !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-      }
-    }
   </style>
 <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@^19.1.0",
+    "react/": "https://esm.sh/react@^19.1.0/",
     "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-    "react/": "https://esm.sh/react@^19.1.0/"
+    "@google/genai": "https://esm.sh/@google/genai@^1.7.0"
   }
 }
 </script>
 </head>
 <body class="bg-gray-100">
   <div id="root"></div>
-  
-  <!--
-    ATTENTION : SCRIPT SIMPLIFIÉ CI-DESSOUS !
-    Ce script unique demande à esm.sh de charger votre application et de gérer
-    lui-même toutes ses dépendances (comme React). C'est plus simple et plus robuste.
-    La configuration est faite pour : jileme / GestionProjets_1, branche 'main'.
-  -->
-  <script type="module" src="https://esm.sh/gh/jileme/GestionProjets_1@main/index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
 </body>
 </html>
