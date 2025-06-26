@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { GoogleGenAI } from "@google/genai";
 import ProjectFilters from './components/ProjectFilters';
 import ProjectAddForm from './components/ProjectAddForm';
 import ProjectTable from './components/ProjectTable';
@@ -16,16 +15,6 @@ import {
   ModalIds,
 } from './types';
 import { loadDatabase, saveDatabase, generateId, addUniqueAndSort, formatMonthYear, parseMonthYear, DB_KEY } from './services/databaseService'; // Import DB_KEY
-
-// Initialize Gemini AI Client (as per general instructions, though not used in this app's core logic)
-// IMPORTANT: Ensure process.env.API_KEY is available in your environment.
-let ai: GoogleGenAI | null = null;
-if (process.env.API_KEY) {
-  ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-} else {
-  console.warn("API_KEY for Gemini is not set. Gemini related functionalities will not be available.");
-}
-
 
 const initialFiltersState: FiltersState = {
   nomProjet: '',
@@ -542,5 +531,3 @@ const App: React.FC = () => {
     </div>
   );
 };
-
-export default App;
