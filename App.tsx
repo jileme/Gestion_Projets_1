@@ -11,10 +11,9 @@ import {
   AddToBddInputsState,
   NewProjectEntryState,
   ModalState,
-  ModalInput,
   ModalIds,
 } from './types';
-import { loadDatabase, saveDatabase, generateId, addUniqueAndSort, formatMonthYear, parseMonthYear, DB_KEY } from './services/databaseService'; // Import DB_KEY
+import { loadDatabase, saveDatabase, generateId, addUniqueAndSort, formatMonthYear, parseMonthYear, DB_KEY } from './services/databaseService';
 
 const initialFiltersState: FiltersState = {
   nomProjet: '',
@@ -116,9 +115,9 @@ const App: React.FC = () => {
       filteredProjects = filteredProjects.filter(p => p.dateEcheance === filters.dateEcheance);
     }
     setGtbData(filteredProjects);
-  }, [db.bddTb1_Projects, filters]); // Added dependencies to useCallback
+  }, [db.bddTb1_Projects, filters]);
 
-  useEffect(() => { // Auto-update table when db changes and filters are present
+  useEffect(() => {
     if(Object.values(filters).some(f => f !== '')) {
       handleUpdateTable();
     }
@@ -127,7 +126,6 @@ const App: React.FC = () => {
 
   const closeModal = () => setModalState({ isOpen: false, title: '' });
 
-  // BT_1 to BT_4: Delete item from filter source list and related data
   const handleDeleteFilterItem = (filterKey: keyof FiltersState) => {
     const selectedValue = filters[filterKey];
     if (!selectedValue) {
@@ -171,7 +169,6 @@ const App: React.FC = () => {
       case 'destinationPrecise': // BT_4
         confirmMessage = `Etes-vous sûr de vouloir supprimer la destination précise "${selectedValue}" ? Cela supprimera les projets associés et l'entrée dans les contacts.`;
         action = () => {
-          // Only delete if it matches the global destination if one is selected, or any if no global is selected.
           const newTb1 = db.bddTb1_Projects.filter(p => 
             !(p.destinationPrecise === selectedValue && (!filters.destinationGlobale || p.destinationGlobale === filters.destinationGlobale))
           );
@@ -187,7 +184,6 @@ const App: React.FC = () => {
     setModalState({ isOpen: true, title: 'Confirmation de suppression', message: confirmMessage, onConfirm: () => { action(); closeModal(); handleUpdateTable(); }, onCancel: closeModal });
   };
   
-  // BT_5 to BT_8: Add item to BDD lists
   const handleAddBddItem = (inputKey: keyof AddToBddInputsState) => {
     const value = addToBddInputs[inputKey];
     if (!value.trim()) {
@@ -223,7 +219,6 @@ const App: React.FC = () => {
         };
         break;
       case 'newDestinationPrecise': // BT_8
-        // This is a multi-step process
         const destPreciseValue = addToBddInputs.newDestinationPrecise;
         setModalState({
             isOpen: true,
@@ -267,14 +262,12 @@ const App: React.FC = () => {
             },
             onCancel: closeModal,
         });
-        return; // Skip generic confirm modal
+        return;
     }
      setModalState({ isOpen: true, title: 'Confirmation', message: confirmMessage, onConfirm: () => { action(); closeModal(); }, onCancel: closeModal });
   };
   
-  // LR Form (New Project Entry) - BT_9
   const handleSubmitNewProject = () => {
-    // Basic validation
     if (!newProjectEntry.nomProjet || !newProjectEntry.typeProjet || !newProjectEntry.destinationGlobale || !newProjectEntry.destinationPrecise || !newProjectEntry.dateEcheance) {
         setModalState({ isOpen: true, title: 'Erreur de saisie', message: 'Veuillez remplir tous les champs obligatoires (Nom, Type, Destinations, Date Échéance).', onConfirm: closeModal, confirmText:'OK'});
         return;
@@ -304,11 +297,9 @@ const App: React.FC = () => {
     updateDb({ bddTb1_Projects: updatedProjects, bdd4_DateEcheance: newBdd4 });
     setNewProjectEntry(initialNewProjectEntryState);
     setEditingProjectId(undefined);
-    // handleUpdateTable(); // Refresh GTB will be handled by useEffect on db change
     setModalState({ isOpen: true, title: 'Succès', message: `Projet ${editingProjectId ? 'modifié' : 'ajouté'} avec succès.`, onConfirm: closeModal, confirmText:'OK'});
   };
 
-  // GTB Actions
   const handleEditGtbRow = (project: BddTb1Item) => {
     setNewProjectEntry({ ...project }); 
     setEditingProjectId(project.id);
@@ -326,7 +317,6 @@ const App: React.FC = () => {
       onConfirm: () => {
         const updatedProjects = db.bddTb1_Projects.filter(p => p.id !== projectId);
         updateDb({ bddTb1_Projects: updatedProjects });
-        // handleUpdateTable(); // Refresh GTB will be handled by useEffect on db change
         closeModal();
       },
       onCancel: closeModal,
@@ -366,7 +356,7 @@ const App: React.FC = () => {
           @page WordSection1 {
             size: A4 landscape; 
             mso-page-orientation: landscape;
-            margin: 0.5in 0.5in 0.5in 0.5in; /* Adjusted margins for A4 landscape */
+            margin: 0.5in 0.5in 0.5in 0.5in;
           }
           div.WordSection1 { page:WordSection1; }
         </style>
@@ -451,16 +441,14 @@ const App: React.FC = () => {
         if (!content) {
           throw new Error("Le fichier est vide ou illisible.");
         }
-        // Basic validation: Is it JSON? Does it have some expected top-level keys?
         const parsedDb = JSON.parse(content);
         if (typeof parsedDb === 'object' && parsedDb !== null && 
             'bdd1_TypeProjet' in parsedDb && 'bddTb1_Projects' in parsedDb && 'bddTb2_Destinations' in parsedDb) {
           
-          localStorage.setItem(DB_KEY, content); // Save imported content to localStorage
-          setDb(loadDatabase()); // Reload database into state from localStorage
-          setFilters(initialFiltersState); // Reset filters
-          setGtbData([]); // Clear current table
-          // handleUpdateTable(); // Update table with new data - now handled by useEffect on db change
+          localStorage.setItem(DB_KEY, content);
+          setDb(loadDatabase());
+          setFilters(initialFiltersState);
+          setGtbData([]);
           setModalState({ isOpen: true, title: 'Succès', message: 'Base de données importée avec succès. Les filtres ont été réinitialisés.', onConfirm: closeModal, confirmText: 'OK' });
         } else {
           throw new Error("Le fichier ne semble pas être une base de données valide pour cette application.");
@@ -469,7 +457,6 @@ const App: React.FC = () => {
         console.error("Erreur lors de l'importation de la BDD:", error);
         setModalState({ isOpen: true, title: 'Erreur d\'importation', message: `Échec de l'importation: ${error instanceof Error ? error.message : String(error)}`, onConfirm: closeModal, confirmText: 'OK' });
       } finally {
-        // Reset file input value so the same file can be selected again if needed
         if (event.target) {
           event.target.value = '';
         }
@@ -501,8 +488,8 @@ const App: React.FC = () => {
           getFilteredDestPreciseOptions={getFilteredDestPreciseOptions}
           contactForSelectedPrecise={contactForSelectedPrecise}
           onExportTableToDoc={handleExportTableToDoc}
-          onExportDatabase={handleExportDatabase} // Pass export BDD function
-          onImportDatabase={handleImportDatabase} // Pass import BDD function
+          onExportDatabase={handleExportDatabase}
+          onImportDatabase={handleImportDatabase}
         />
       </div>
       
@@ -531,3 +518,5 @@ const App: React.FC = () => {
     </div>
   );
 };
+
+export default App;
