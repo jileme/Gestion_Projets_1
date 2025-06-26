@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestionnaire de Projets</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom scrollbar for better aesthetics */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    /* Ensure month/year input text is visible */
+    input[type="month"]::-webkit-calendar-picker-indicator {
+        filter: invert(0.5); /* Adjust if needed for better visibility on dark/light themes */
+    }
+
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 1cm; /* Adjust margin as needed */
+      }
+      body {
+        -webkit-print-color-adjust: exact !important; /* Ensures background colors and images are printed in Chrome/Safari */
+        print-color-adjust: exact !important; /* Standard property */
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 10pt; /* Base font size for print */
+        background-color: #ffffff !important; /* Ensure white background */
+      }
+      .no-print {
+        display: none !important;
+      }
+      
+      /* Hide everything in #app-container initially, except the printable area */
+      #app-container > *:not(#project-table-printable-area) {
+        display: none !important;
+      }
+      
+      /* Then make the printable area visible and take up full space */
+      #project-table-printable-area {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        /* Optional: position absolute to ensure it's the only thing if other elements interfere */
+        /* position: absolute; 
+           left: 0; 
+           top: 0; */
+      }
+
+      /* Table specific styles for print, targeting table inside the printable area */
+      #project-table-printable-area table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 8pt; /* Slightly smaller font for more content on A4 */
+        table-layout: auto; /* Allow table to adjust column widths */
+      }
+      #project-table-printable-area th,
+      #project-table-printable-area td {
+        border: 1px solid #999999 !important; /* Darker, clear border for print */
+        padding: 3px 5px !important; /* Reduced padding for more content */
+        word-break: break-word; /* Allow long words to break */
+        text-align: left !important; /* Ensure consistent text alignment */
+      }
+      #project-table-printable-area th {
+        background-color: #e0e0e0 !important; /* Light grey background for headers, ensure it prints */
+        font-weight: bold;
+      }
+      /* Hide buttons within the table cells during print */
+      #project-table-printable-area .action-buttons-cell button {
+        display: none !important;
+      }
+       /* Hide the "Actions" column header if its content (buttons) is hidden, or if desired */
+      #project-table-printable-area th:last-child {
+         /* If you want to always hide the actions column header: display: none !important; */
+      }
+
+      /* Remove Tailwind's container properties for print if they conflict */
+      .container {
+        max-width: none !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+    }
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.7.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-gray-100">
+  <div id="root"></div>
+  <script type="module" src="./index.tsx"></script> {/* Changed src to relative path */}
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

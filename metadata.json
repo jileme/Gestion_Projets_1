@@ -1,0 +1,5 @@
+{
+  "name": "Gestionnaire de Projets",
+  "description": "Une application web pour gérer des projets, leurs types, destinations, et détails associés, avec des fonctionnalités de filtrage et de mise à jour de données.",
+  "requestFramePermissions": []
+}
